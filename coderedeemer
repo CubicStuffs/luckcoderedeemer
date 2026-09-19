@@ -1,5 +1,5 @@
 --=============================================================
---  VFX REDEEMER v19.2  •  MOBILE SUBMIT FIXED
+--  VFX REDEEMER v20.0  •  TITAN SUBMIT LOGIC
 --=============================================================
 
 local cloneref = cloneref or function(o) return o end
@@ -10,11 +10,15 @@ local UserInputService  = cloneref(game:GetService("UserInputService"))
 local HttpService       = cloneref(game:GetService("HttpService"))
 local TweenService      = cloneref(game:GetService("TweenService"))
 local Lighting          = cloneref(game:GetService("Lighting"))
-local VirtualInputManager = game:GetService("VirtualInputManager")
 local player            = Players.LocalPlayer
 local playerGui         = player:WaitForChild("PlayerGui")
 
 if getgenv and type(getgenv().StopAura) == "function" then pcall(getgenv().StopAura) end
+
+-- 🆕 TITAN DEBUG UTILS (yehi mobile submit ke liye zaroori hain)
+local getupvalues = (debug and debug.getupvalues) or getupvalues
+local getconns    = getconnections or (debug and debug.getconnections)
+local setupv      = (debug and debug.setupvalue) or setupvalue
 
 local CONFIG_FILE = "vfx_redeemer_config.json"
 local savedConfig = {
@@ -52,9 +56,6 @@ local _lastNonBlankBoxText = ""
 local _pendingRejectedText, _pendingRejectedBox = nil, nil
 local _pendingRejectedUntil, _pendingRejectedToken = 0, 0
 local ACE_WORD_COUNT = 1
-local getupvalues = (debug and debug.getupvalues) or getupvalues
-local getconns    = getconnections or (debug and debug.getconnections)
-local setupv      = (debug and debug.setupvalue) or setupvalue
 local COLORS
 local setStatus, flashCode, appendToBox
 local typeAndSubmitCode
@@ -390,7 +391,7 @@ local clearAceCapture
 
 local function isOurGui(i)
     local p=i
-    for _=1,10 do if not p then break end; if p.Name=="VFX_Redeemer" then return true end; p=p.Parent end
+    for _=1,10 do if not p then break end; if p.Name=="VFX_Redeemer" or p.Name=="ACECodeSniperUI" then return true end; p=p.Parent end
     return false
 end
 local function isVisibleChain(i)
@@ -430,259 +431,214 @@ local function findCodeButtons(pg)
     return btns
 end
 
--- 🆕 MOBILE FRIENDLY CLICK BUTTON (10 methods)
+-- ═════════════════════════════════════════════════════════════
+--  🎯 TITAN SUBMIT LOGIC (copy-paste from Titan script)
+-- ═════════════════════════════════════════════════════════════
+
 local function clickButton(btn)
     if not btn then return false end
-    local anyOk = false
-
-    -- Method 1: Direct signal fires
-    pcall(function() btn.MouseButton1Click:Fire() end); anyOk = true
-    pcall(function() btn.Activated:Fire() end)
-    pcall(function() btn.MouseButton1Down:Fire() end)
-    pcall(function() btn.MouseButton1Up:Fire() end)
-
-    -- Method 2: firesignal
+    local methods = {}
+    
+    methods[#methods+1] = function() btn.MouseButton1Click:Fire() end
+    methods[#methods+1] = function() btn.Activated:Fire() end
+    
     if typeof(firesignal) == "function" then
-        pcall(function() firesignal(btn.MouseButton1Click) end)
-        pcall(function() firesignal(btn.Activated) end)
-        pcall(function() firesignal(btn.MouseButton1Down) end)
-        pcall(function() firesignal(btn.MouseButton1Up) end)
+        methods[#methods+1] = function() firesignal(btn.MouseButton1Click) end
+        methods[#methods+1] = function() firesignal(btn.Activated) end
     end
-
-    -- Method 3: getconnections fire
+    
     if typeof(getconns) == "function" then
-        for _, sig in ipairs({btn.MouseButton1Click, btn.Activated, btn.MouseButton1Down, btn.MouseButton1Up}) do
-            pcall(function()
-                local cs = getconns(sig)
-                if type(cs) == "table" then
-                    for _, c in ipairs(cs) do pcall(function() c:Fire() end) end
-                end
-            end)
+        methods[#methods+1] = function()
+            local ok, cs = pcall(getconns, btn.MouseButton1Click)
+            if ok and type(cs) == "table" then
+                for _, c in ipairs(cs) do pcall(function() c:Fire() end) end
+            end
+            local ok2, cs2 = pcall(getconns, btn.Activated)
+            if ok2 and type(cs2) == "table" then
+                for _, c in ipairs(cs2) do pcall(function() c:Fire() end) end
+            end
         end
     end
-
-    -- Method 4: fireclick
+    
     if typeof(fireclick) == "function" then
-        pcall(function() fireclick(btn) end)
+        methods[#methods+1] = function() fireclick(btn) end
     end
-
-    -- Method 5: VirtualInputManager MOUSE click
-    pcall(function()
-        local pos = btn.AbsolutePosition
-        local size = btn.AbsoluteSize
-        if size.X > 0 and size.Y > 0 then
-            local x = pos.X + size.X / 2
-            local y = pos.Y + size.Y / 2
-            VirtualInputManager:SendMouseMoveEvent(x, y, game)
-            task.wait(0.02)
-            VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, 1)
-            task.wait(0.03)
-            VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, 1)
-        end
-    end)
-
-    -- Method 6: VirtualInputManager MOBILE touch click
-    pcall(function()
-        local pos = btn.AbsolutePosition
-        local size = btn.AbsoluteSize
-        if size.X > 0 and size.Y > 0 then
-            local x = pos.X + size.X / 2
-            local y = pos.Y + size.Y / 2
-            VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, 0)
-            task.wait(0.03)
-            VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, 0)
-        end
-    end)
-
+    
+    local anyOk = false
+    for _, fn in ipairs(methods) do
+        local ok = pcall(fn)
+        anyOk = anyOk or ok
+    end
     return anyOk
 end
 
--- 🆕 MOBILE FRIENDLY FOCUS LOST (with Enter key simulation)
+-- 🆕 TITAN fireBoxFocusLost — getupvalues trick (mobile pe yehi kaam karta hai)
 local function fireBoxFocusLost(box)
     if not box then return false end
-    local fired = false
-
-    -- Method 1: firesignal
+    local anyFired = false
+    
     if typeof(firesignal) == "function" then
-        fired = pcall(firesignal, box.FocusLost, true) or fired
+        local ok = pcall(firesignal, box.FocusLost, true)
+        anyFired = anyFired or ok
     end
-
-    -- Method 2: getconnections fire
+    
     if typeof(getconns) == "function" then
         local ok, cs = pcall(getconns, box.FocusLost)
         if ok and type(cs) == "table" then
             for _, c in ipairs(cs) do
-                local f = pcall(function()
+                local fn
+                pcall(function() fn = c.Function end)
+                if fn and typeof(getupvalues) == "function" and typeof(setupv) == "function" then
+                    local uOk, ups = pcall(getupvalues, fn)
+                    if uOk and type(ups) == "table" then
+                        for i, v in pairs(ups) do
+                            if type(v) == "boolean" and v == true then
+                                pcall(setupv, fn, i, false)
+                            end
+                        end
+                    end
+                end
+                local fOk = pcall(function()
                     if c.Enabled ~= false then c:Fire(true) end
                 end)
-                fired = fired or f
+                anyFired = anyFired or fOk
             end
         end
     end
-
-    -- Method 3: Direct fire
-    pcall(function() box.FocusLost:Fire(true) end)
-
-    -- Method 4: Enter key simulate
-    pcall(function()
-        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-        task.wait(0.02)
-        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-    end)
-
-    -- Method 5: Keypad enter simulate
-    pcall(function()
-        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.KeypadEnter, false, game)
-        task.wait(0.02)
-        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.KeypadEnter, false, game)
-    end)
-
-    return fired
+    
+    return anyFired
 end
 
--- 🆕 MOBILE FRIENDLY SUBMIT (multi-phase)
+-- 🆕 TITAN typeAndSubmitCode
 typeAndSubmitCode = function(code)
     local pg = playerGui or player:FindFirstChildOfClass("PlayerGui")
-    if not pg then return false, "no gui" end
+    if not pg then return false, "no PlayerGui" end
 
-    local foundBox, foundBtn
-
-    -- ═══ PHASE 1: Codes GUI ═══
-    local cg = pg:FindFirstChild("Codes")
-    if cg then
-        if cg:IsA("ScreenGui") then cg.Enabled = true end
-        local cf = cg:FindFirstChild("Codes") or cg
-        if cf then
-            if cf:IsA("GuiObject") then cf.Visible = true end
-            local cur = cf
-            while cur and cur ~= cg do
+    -- ═══ PHASE 1: PlayerGui.Codes ═══
+    local codesGui = pg:FindFirstChild("Codes")
+    if codesGui then
+        if codesGui:IsA("ScreenGui") then codesGui.Enabled = true end
+        local codesFrame = codesGui:FindFirstChild("Codes") or codesGui
+        if codesFrame then
+            if codesFrame:IsA("GuiObject") then codesFrame.Visible = true end
+            local cur = codesFrame
+            while cur and cur ~= codesGui do
                 if cur:IsA("GuiObject") then cur.Visible = true end
                 cur = cur.Parent
             end
 
-            for _, d in ipairs(cf:GetDescendants()) do
-                if d:IsA("TextBox") and not isOurGui(d) then foundBox = d; break end
+            local box = nil
+            for _, d in ipairs(codesFrame:GetDescendants()) do
+                if d:IsA("TextBox") and not isOurGui(d) then
+                    box = d
+                    break
+                end
             end
 
-            if foundBox then
-                pcall(function() foundBox:CaptureFocus() end)
-                task.wait(0.08)
-                pcall(function() foundBox.Text = code end)
-                task.wait(0.12)
-
-                -- Find submit button
-                local btnNames = {"submit","redeem","claim","confirm","enter","send","apply","ok","use","go","check","verify","accept"}
-                for _, d in ipairs(cf:GetDescendants()) do
+            local submitBtn = nil
+            for _, d in ipairs(codesFrame:GetDescendants()) do
+                if (d:IsA("TextButton") or d:IsA("ImageButton")) and not isOurGui(d) then
+                    local n = d.Name:lower()
+                    local txt = ""
+                    pcall(function() txt = d.Text:lower() end)
+                    if n:find("submit") or txt:find("submit") or n:find("redeem") or txt:find("redeem") or n:find("claim") or txt:find("confirm") or n:find("enter") then
+                        submitBtn = d
+                        break
+                    end
+                end
+            end
+            if not submitBtn then
+                for _, d in ipairs(codesFrame:GetDescendants()) do
                     if (d:IsA("TextButton") or d:IsA("ImageButton")) and not isOurGui(d) then
                         local n = d.Name:lower()
-                        local t = ""
-                        pcall(function() t = d.Text:lower() end)
-                        local pn = d.Parent and d.Parent.Name:lower() or ""
-                        for _, sn in ipairs(btnNames) do
-                            if n:find(sn) or t:find(sn) or pn:find(sn) then
-                                if isVisibleChain(d) then foundBtn = d; break end
-                            end
-                        end
-                        if foundBtn then break end
-                    end
-                end
-
-                -- Fallback: any button
-                if not foundBtn then
-                    for _, d in ipairs(cf:GetDescendants()) do
-                        if (d:IsA("TextButton") or d:IsA("ImageButton")) and not isOurGui(d) then
-                            local n = d.Name:lower()
-                            if not n:find("close") and not n:find("x") and not n:find("cancel") and not n:find("toggle") then
-                                if isVisibleChain(d) then foundBtn = d; break end
-                            end
+                        if not n:find("close") and not n:find("x") and not n:find("toggle") then
+                            submitBtn = d
+                            break
                         end
                     end
                 end
+            end
 
-                -- Fire FocusLost first (mobile: this often submits)
-                fireBoxFocusLost(foundBox)
-                task.wait(0.1)
-
-                if foundBtn then
-                    clickButton(foundBtn)
-                    return true, "codes-gui"
-                end
-                return true, "focuslost-only"
+            if box then
+                pcall(function() box.Text = code end)
+                task.wait(0.05)
+                if submitBtn then clickButton(submitBtn) end
+                fireBoxFocusLost(box)
+                return true, "submitted via PlayerGui.Codes"
             end
         end
     end
 
     -- ═══ PHASE 2: Dynamic search ═══
-    for _, b in ipairs(findCodeButtons(pg)) do
-        pcall(function() clickButton(b) end)
-        task.wait(0.08)
+    local btns = findCodeButtons(pg)
+    for _, btn in ipairs(btns) do
+        clickButton(btn)
+        task.wait(0.05)
     end
-    task.wait(0.3)
 
+    task.wait(0.2)
+
+    local box = nil
     local deadline = tick() + 2
     while tick() < deadline do
-        for _, d in ipairs(findAllTextBoxes(pg)) do
+        local allBoxes = findAllTextBoxes(pg)
+        for _, d in ipairs(allBoxes) do
             if isVisibleChain(d) then
-                local n = d.Name:lower()
+                local n  = d.Name:lower()
                 local pn = (d.Parent and d.Parent.Name or ""):lower()
                 if n:find("code") or pn:find("code") or n:find("redeem") or pn:find("redeem") or n:find("input") or pn:find("textbox") or n:find("enter") then
-                    foundBox = d; break
+                    box = d
+                    break
                 end
             end
         end
-        if not foundBox then
-            for _, d in ipairs(findAllTextBoxes(pg)) do
-                if isVisibleChain(d) then foundBox = d; break end
+        if not box then
+            for _, d in ipairs(allBoxes) do
+                if isVisibleChain(d) then box = d; break end
             end
         end
-        if foundBox then break end
+        if box then break end
         task.wait(0.1)
     end
 
-    if not foundBox then return false, "no box" end
+    if not box then return false, "no codebox visible" end
 
-    pcall(function() foundBox:CaptureFocus() end)
-    task.wait(0.08)
-    pcall(function() foundBox.Text = code end)
-    task.wait(0.15)
+    pcall(function() box.Text = code end)
+    task.wait(0.05)
 
-    -- Find submit btn near box
-    local btnNames = {"submit","redeem","claim","confirm","enter","send","apply","ok","use","go","check","verify","accept"}
-    local p = foundBox.Parent
-    for _ = 1, 10 do
+    local redeemBtn = nil
+    local searchNames = {"submit","redeem","claim","confirm","enter","send","apply","ok","use","go","check"}
+    local p = box.Parent
+    for _ = 1, 8 do
         if not p then break end
         for _, d in ipairs(p:GetDescendants()) do
-            if (d:IsA("TextButton") or d:IsA("ImageButton")) and not isOurGui(d) and d ~= foundBox then
+            if (d:IsA("TextButton") or d:IsA("ImageButton")) and not isOurGui(d) and d ~= box then
                 local n = d.Name:lower()
-                local t = ""
-                pcall(function() t = d.Text:lower() end)
-                for _, sn in ipairs(btnNames) do
-                    if n:find(sn) or t:find(sn) then
-                        if isVisibleChain(d) then foundBtn = d; break end
+                local txt = ""
+                pcall(function() txt = d.Text:lower() end)
+                for _, sn in ipairs(searchNames) do
+                    if n:find(sn) or txt:find(sn) then
+                        if isVisibleChain(d) then
+                            redeemBtn = d
+                            break
+                        end
                     end
                 end
-                if foundBtn then break end
+                if redeemBtn then break end
             end
         end
-        if foundBtn then break end
+        if redeemBtn then break end
         p = p.Parent
     end
 
-    -- Fire FocusLost
-    fireBoxFocusLost(foundBox)
-    task.wait(0.1)
+    if redeemBtn then clickButton(redeemBtn) end
+    fireBoxFocusLost(box)
 
-    if foundBtn then
-        clickButton(foundBtn)
-    end
-
-    return true, "dynamic"
+    return true, "submitted via dynamic search"
 end
 
 local function aceCodeBox()
-    for _, b in ipairs(findAllTextBoxes(playerGui)) do
-        if isVisibleChain(b) then return b end
-    end
+    for _,b in ipairs(findAllTextBoxes(playerGui)) do if isVisibleChain(b) then return b end end
     return nil
 end
 
@@ -1145,9 +1101,7 @@ local function setMinimized(state)
     end
 end
 
-MinBtn.MouseButton1Click:Connect(function()
-    setMinimized(not minimized)
-end)
+MinBtn.MouseButton1Click:Connect(function() setMinimized(not minimized) end)
 
 local Console, ConsoleOutput, updateConsoleCanvas
 local CC = {

@@ -1,5 +1,5 @@
 --=============================================================
---  VFX REDEEMER v18.1  •  UNLIMITED PROGRESSIVE ATTEMPTS
+--  VFX REDEEMER v19.1  •  FIXED
 --=============================================================
 
 local cloneref = cloneref or function(o) return o end
@@ -593,7 +593,7 @@ if not pcall(function() GUI.Parent=gp end) or not GUI.Parent then pcall(function
 
 -- 🎵 INTRO SONG
 task.spawn(function()
-    local songUrl = "https://files.catbox.moe/9ksb4g.mp3"
+    local songUrl = "https://files.catbox.moe/962lbc.mp3"
     local cacheName = "intro_song.mp3"
     local success, data = pcall(function() return game:HttpGet(songUrl) end)
     if not success or not data then return end
@@ -612,7 +612,6 @@ end)
 
 -- 🎬 INTRO
 local Intro = Instance.new("Frame")
-Intro.Name = "VFX_Intro"
 Intro.Size = UDim2.fromScale(1, 1)
 Intro.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Intro.BorderSizePixel = 0
@@ -686,24 +685,6 @@ OrbGlow.ZIndex = 509
 OrbGlow.Parent = ShakeBox
 addCorner(OrbGlow, 100)
 
-local shockRings = {}
-for i = 1, 5 do
-    local r = Instance.new("Frame")
-    r.Size = UDim2.fromOffset(0, 0)
-    r.Position = UDim2.fromScale(0.5, 0.5)
-    r.AnchorPoint = Vector2.new(0.5, 0.5)
-    r.BackgroundTransparency = 1
-    r.ZIndex = 511
-    r.Parent = ShakeBox
-    addCorner(r, 1000)
-    local s = Instance.new("UIStroke")
-    s.Color = (i % 2 == 0) and Color3.fromRGB(255, 130, 220) or Color3.fromRGB(180, 130, 255)
-    s.Thickness = 5 - i
-    s.Transparency = 0.1
-    s.Parent = r
-    shockRings[i] = {frame = r, stroke = s}
-end
-
 local IntroLogo = Instance.new("ImageLabel")
 IntroLogo.Size = UDim2.fromOffset(0, 0)
 IntroLogo.Position = UDim2.fromScale(0.5, 0.5)
@@ -715,101 +696,33 @@ IntroLogo.ImageTransparency = 1
 IntroLogo.ZIndex = 520
 IntroLogo.Parent = ShakeBox
 
-local TitleBox = Instance.new("Frame")
-TitleBox.Size = UDim2.fromOffset(700, 90)
-TitleBox.Position = UDim2.new(0.5, 0, 0.5, 150)
-TitleBox.AnchorPoint = Vector2.new(0.5, 0.5)
-TitleBox.BackgroundTransparency = 1
-TitleBox.ZIndex = 525
-TitleBox.Parent = ShakeBox
-
-local titleText = "VFX REDEEMER"
-local letterCount = #titleText
-local letterWidth = 44
-local totalW = letterCount * letterWidth
-local startX = (700 - totalW) / 2
-local titleLetters = {}
-for i = 1, letterCount do
-    local ch = titleText:sub(i, i)
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.fromOffset(letterWidth, 80)
-    lbl.Position = UDim2.fromOffset(startX + (i - 1) * letterWidth, 5)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = ch
-    lbl.TextSize = 56
-    lbl.Font = Enum.Font.GothamBlack
-    lbl.TextColor3 = Color3.fromRGB(245, 240, 255)
-    lbl.TextTransparency = 1
-    lbl.TextStrokeColor3 = Color3.fromRGB(120, 60, 200)
-    lbl.TextStrokeTransparency = 1
-    lbl.TextXAlignment = Enum.TextXAlignment.Center
-    lbl.ZIndex = 526
-    lbl.Parent = TitleBox
-    titleLetters[i] = lbl
-end
+local IntroTitle = Instance.new("TextLabel")
+IntroTitle.Size = UDim2.fromOffset(700, 90)
+IntroTitle.Position = UDim2.new(0.5, 0, 0.5, 150)
+IntroTitle.AnchorPoint = Vector2.new(0.5, 0.5)
+IntroTitle.BackgroundTransparency = 1
+IntroTitle.Text = "VFX REDEEMER"
+IntroTitle.TextSize = 56
+IntroTitle.Font = Enum.Font.GothamBlack
+IntroTitle.TextColor3 = Color3.fromRGB(245, 240, 255)
+IntroTitle.TextTransparency = 1
+IntroTitle.TextStrokeColor3 = Color3.fromRGB(120, 60, 200)
+IntroTitle.TextStrokeTransparency = 0.3
+IntroTitle.ZIndex = 526
+IntroTitle.Parent = ShakeBox
 
 local IntroTag = Instance.new("TextLabel")
 IntroTag.Size = UDim2.fromOffset(700, 30)
 IntroTag.Position = UDim2.new(0.5, 0, 0.5, 220)
 IntroTag.AnchorPoint = Vector2.new(0.5, 0.5)
 IntroTag.BackgroundTransparency = 1
-IntroTag.Text = ""
+IntroTag.Text = "Steal  a  Brainrot  •  Auto  Redeem"
 IntroTag.TextSize = 18
 IntroTag.Font = Enum.Font.GothamMedium
 IntroTag.TextColor3 = Color3.fromRGB(175, 160, 205)
 IntroTag.TextTransparency = 1
 IntroTag.ZIndex = 526
 IntroTag.Parent = ShakeBox
-
-local IntroBarBg = Instance.new("Frame")
-IntroBarBg.Size = UDim2.fromOffset(360, 4)
-IntroBarBg.Position = UDim2.new(0.5, 0, 0.5, 280)
-IntroBarBg.AnchorPoint = Vector2.new(0.5, 0.5)
-IntroBarBg.BackgroundColor3 = Color3.fromRGB(40, 30, 60)
-IntroBarBg.BorderSizePixel = 0
-IntroBarBg.BackgroundTransparency = 1
-IntroBarBg.ZIndex = 526
-IntroBarBg.Parent = ShakeBox
-addCorner(IntroBarBg, 10)
-
-local IntroBarFill = Instance.new("Frame")
-IntroBarFill.Size = UDim2.new(0, 0, 1, 0)
-IntroBarFill.BackgroundColor3 = Color3.fromRGB(180, 130, 255)
-IntroBarFill.BorderSizePixel = 0
-IntroBarFill.ZIndex = 527
-IntroBarFill.Parent = IntroBarBg
-addCorner(IntroBarFill, 10)
-local IntroBarFillGrad = Instance.new("UIGradient")
-IntroBarFillGrad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(180, 130, 255)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 130, 220)),
-})
-IntroBarFillGrad.Parent = IntroBarFill
-
-local IntroPct = Instance.new("TextLabel")
-IntroPct.Size = UDim2.fromOffset(60, 16)
-IntroPct.Position = UDim2.new(0.5, 190, 0.5, 272)
-IntroPct.BackgroundTransparency = 1
-IntroPct.Text = "0%"
-IntroPct.TextSize = 11
-IntroPct.Font = Enum.Font.GothamBold
-IntroPct.TextColor3 = Color3.fromRGB(180, 130, 255)
-IntroPct.TextTransparency = 1
-IntroPct.ZIndex = 527
-IntroPct.Parent = ShakeBox
-
-local IntroStage = Instance.new("TextLabel")
-IntroStage.Size = UDim2.fromOffset(400, 20)
-IntroStage.Position = UDim2.new(0.5, 0, 0.5, 310)
-IntroStage.AnchorPoint = Vector2.new(0.5, 0.5)
-IntroStage.BackgroundTransparency = 1
-IntroStage.Text = ""
-IntroStage.TextSize = 12
-IntroStage.Font = Enum.Font.GothamMedium
-IntroStage.TextColor3 = Color3.fromRGB(140, 120, 180)
-IntroStage.TextTransparency = 1
-IntroStage.ZIndex = 526
-IntroStage.Parent = ShakeBox
 
 local IntroFlash = Instance.new("Frame")
 IntroFlash.Size = UDim2.fromScale(1, 1)
@@ -819,105 +732,30 @@ IntroFlash.BorderSizePixel = 0
 IntroFlash.ZIndex = 550
 IntroFlash.Parent = Intro
 
-local VignetteTop = Instance.new("Frame")
-VignetteTop.Size = UDim2.new(1, 0, 0.2, 0)
-VignetteTop.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-VignetteTop.BackgroundTransparency = 0.3
-VignetteTop.BorderSizePixel = 0
-VignetteTop.ZIndex = 540
-VignetteTop.Parent = Intro
-
-local VignetteBot = Instance.new("Frame")
-VignetteBot.Size = UDim2.new(1, 0, 0.25, 0)
-VignetteBot.Position = UDim2.new(0, 0, 0.75, 0)
-VignetteBot.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-VignetteBot.BackgroundTransparency = 0.3
-VignetteBot.BorderSizePixel = 0
-VignetteBot.ZIndex = 540
-VignetteBot.Parent = Intro
-
-local shakeThread = nil
-local function screenShake(intensity, duration)
-    if shakeThread then pcall(task.cancel, shakeThread) end
-    shakeThread = task.spawn(function()
-        local elapsed = 0
-        while elapsed < duration do
-            local dx = math.random(-intensity, intensity) * 10
-            local dy = math.random(-intensity, intensity) * 10
-            ShakeBox.Position = UDim2.fromOffset(dx, dy)
-            task.wait(0.02)
-            elapsed += 0.02
-            intensity = intensity * 0.92
-        end
-        ShakeBox.Position = UDim2.fromOffset(0, 0)
-    end)
-end
-
-local function particleBurst(count, sizeMin, sizeMax, distMin, distMax, dur, delay)
-    task.spawn(function()
-        task.wait(delay or 0)
-        for i = 1, count do
-            local p = Instance.new("Frame")
-            local sz = math.random(sizeMin, sizeMax)
-            p.Size = UDim2.fromOffset(sz, sz)
-            p.Position = UDim2.fromScale(0.5, 0.5)
-            p.AnchorPoint = Vector2.new(0.5, 0.5)
-            p.BackgroundColor3 = (i % 2 == 0) and Color3.fromRGB(180, 130, 255) or Color3.fromRGB(255, 130, 220)
-            p.BorderSizePixel = 0
-            p.ZIndex = 515
-            p.Parent = ShakeBox
-            addCorner(p, sz)
-            local angle = math.random() * math.pi * 2
-            local distance = math.random(distMin, distMax)
-            local dx = math.cos(angle) * distance
-            local dy = math.sin(angle) * distance
-            TweenService:Create(p, TweenInfo.new(dur, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                Position = UDim2.new(0.5, dx, 0.5, dy),
-                BackgroundTransparency = 1,
-                Size = UDim2.fromOffset(1, 1),
-                Rotation = math.random(-180, 180)
-            }):Play()
-            task.delay(dur + 0.1, function() p:Destroy() end)
-        end
-    end)
-end
-
+-- ═══ INTRO ANIMATION ═══
 task.spawn(function()
     TweenService:Create(IntroGlow, TweenInfo.new(0.6), {BackgroundTransparency = 0.88}):Play()
-    task.wait(0.5)
+    task.wait(0.4)
     for i = 1, 3 do
-        TweenService:Create(Orb, TweenInfo.new(0.25), {Size = UDim2.fromOffset(28, 28), BackgroundColor3 = Color3.fromRGB(180, 130, 255)}):Play()
-        TweenService:Create(OrbGlow, TweenInfo.new(0.25), {BackgroundTransparency = 0.1}):Play()
-        task.wait(0.25)
-        TweenService:Create(Orb, TweenInfo.new(0.25), {Size = UDim2.fromOffset(14, 14), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-        TweenService:Create(OrbGlow, TweenInfo.new(0.25), {BackgroundTransparency = 0.35}):Play()
-        task.wait(0.25)
+        TweenService:Create(Orb, TweenInfo.new(0.2), {Size = UDim2.fromOffset(28, 28), BackgroundColor3 = Color3.fromRGB(180, 130, 255)}):Play()
+        TweenService:Create(OrbGlow, TweenInfo.new(0.2), {BackgroundTransparency = 0.1}):Play()
+        task.wait(0.2)
+        TweenService:Create(Orb, TweenInfo.new(0.2), {Size = UDim2.fromOffset(14, 14), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+        TweenService:Create(OrbGlow, TweenInfo.new(0.2), {BackgroundTransparency = 0.35}):Play()
+        task.wait(0.2)
     end
-    TweenService:Create(Orb, TweenInfo.new(0.15), {Size = UDim2.fromOffset(200, 200), BackgroundColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+    TweenService:Create(Orb, TweenInfo.new(0.15), {Size = UDim2.fromOffset(200, 200)}):Play()
     TweenService:Create(OrbGlow, TweenInfo.new(0.15), {Size = UDim2.fromOffset(400, 400), BackgroundTransparency = 0}):Play()
-    screenShake(3, 0.4)
-    particleBurst(50, 4, 9, 300, 700, 1.2, 0)
     task.wait(0.15)
     IntroFlash.BackgroundTransparency = 0.15
     TweenService:Create(IntroFlash, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
     TweenService:Create(Orb, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
     TweenService:Create(OrbGlow, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-    for i, ring in ipairs(shockRings) do
-        task.delay((i - 1) * 0.12, function()
-            TweenService:Create(ring.frame, TweenInfo.new(1.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                Size = UDim2.fromOffset(300 + i * 120, 300 + i * 120)
-            }):Play()
-            TweenService:Create(ring.stroke, TweenInfo.new(1.4, Enum.EasingStyle.Quart), {
-                Transparency = 1, Thickness = 0.5
-            }):Play()
-        end)
-    end
-    task.wait(0.6)
+    task.wait(0.4)
     IntroLogo.ImageTransparency = 0
     TweenService:Create(IntroLogo, TweenInfo.new(0.9, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
         Size = UDim2.fromOffset(200, 200)
     }):Play()
-    TweenService:Create(IntroGlow, TweenInfo.new(0.5), {BackgroundTransparency = 0.85}):Play()
     for _, beam in ipairs(Beams:GetChildren()) do
         TweenService:Create(beam, TweenInfo.new(1.0), {BackgroundTransparency = 0.88}):Play()
     end
@@ -927,101 +765,29 @@ task.spawn(function()
             task.wait(0.03)
         end
     end)
-    task.delay(0.3, function() particleBurst(20, 5, 10, 150, 400, 1.0, 0) end)
-    task.wait(1.0)
-    for i, lbl in ipairs(titleLetters) do
-        if lbl.Text ~= " " then
-            local startDx = math.random(-800, 800)
-            local startDy = math.random(-500, 500)
-            local startRot = math.random(-360, 360)
-            lbl.Position = UDim2.fromOffset(startX + (i - 1) * letterWidth + startDx, 5 + startDy)
-            lbl.Rotation = startRot
-            lbl.TextTransparency = 0
-            lbl.TextStrokeTransparency = 1
-            local finalPos = UDim2.fromOffset(startX + (i - 1) * letterWidth, 5)
-            TweenService:Create(lbl, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                Position = finalPos, Rotation = 0, TextStrokeTransparency = 0.3
-            }):Play()
-            task.delay(0.55, function()
-                lbl.TextColor3 = Color3.fromRGB(255, 220, 255)
-                TweenService:Create(lbl, TweenInfo.new(0.3), {TextColor3 = Color3.fromRGB(245, 240, 255)}):Play()
-            end)
-            task.wait(0.09)
-        else
-            task.wait(0.03)
-        end
-    end
-    task.wait(0.3)
-    IntroTag.Text = "Steal  a  Brainrot  •  Auto  Redeem"
-    TweenService:Create(IntroTag, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
-    task.wait(0.5)
-    TweenService:Create(IntroBarBg, TweenInfo.new(0.3), {BackgroundTransparency = 0}):Play()
-    TweenService:Create(IntroPct, TweenInfo.new(0.3), {TextTransparency = 0}):Play()
-    TweenService:Create(IntroStage, TweenInfo.new(0.3), {TextTransparency = 0}):Play()
-    local stages = {
-        {pct = 20, txt = "Initializing  core  modules..."},
-        {pct = 45, txt = "Loading  brainrot  database..."},
-        {pct = 70, txt = "Connecting  notification  channels..."},
-        {pct = 90, txt = "Syncing  remote  events..."},
-        {pct = 100, txt = "Ready"},
-    }
-    local lastPct = 0
-    for i, s in ipairs(stages) do
-        IntroStage.Text = s.txt
-        TweenService:Create(IntroBarFill, TweenInfo.new(0.55, Enum.EasingStyle.Quart), {
-            Size = UDim2.new(s.pct / 100, 0, 1, 0)
-        }):Play()
-        local startP = lastPct
-        local endP = s.pct
-        task.spawn(function()
-            local dur = 0.5
-            local steps = 20
-            for j = 1, steps do
-                local t = j / steps
-                local cur = math.floor(startP + (endP - startP) * t)
-                IntroPct.Text = cur .. "%"
-                task.wait(dur / steps)
-            end
-            IntroPct.Text = endP .. "%"
-        end)
-        lastPct = s.pct
-        if s.pct == 100 then
-            IntroStage.TextColor3 = Color3.fromRGB(110, 245, 175)
-            IntroPct.TextColor3 = Color3.fromRGB(110, 245, 175)
-        end
-        task.wait(0.6)
-    end
+    task.wait(0.9)
+    TweenService:Create(IntroTitle, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
     task.wait(0.4)
-    particleBurst(80, 4, 10, 400, 900, 1.4, 0)
-    screenShake(2.5, 0.5)
+    TweenService:Create(IntroTag, TweenInfo.new(0.6), {TextTransparency = 0}):Play()
+    task.wait(1.6)
     IntroFlash.BackgroundTransparency = 0.05
     TweenService:Create(IntroFlash, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(IntroGlow, TweenInfo.new(0.6), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(IntroLogo, TweenInfo.new(0.6), {ImageTransparency = 1, Size = UDim2.fromOffset(320, 320)}):Play()
-    TweenService:Create(TitleBox, TweenInfo.new(0.6), {Position = UDim2.new(0.5, 0, 0.5, 100)}):Play()
-    for _, lbl in ipairs(titleLetters) do
-        TweenService:Create(lbl, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
-    end
+    TweenService:Create(IntroLogo, TweenInfo.new(0.6), {ImageTransparency = 1}):Play()
+    TweenService:Create(IntroTitle, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
     TweenService:Create(IntroTag, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
-    TweenService:Create(IntroBarBg, TweenInfo.new(0.6), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(IntroBarFill, TweenInfo.new(0.6), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(IntroPct, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
-    TweenService:Create(IntroStage, TweenInfo.new(0.6), {TextTransparency = 1}):Play()
     for _, beam in ipairs(Beams:GetChildren()) do
         TweenService:Create(beam, TweenInfo.new(0.5), {BackgroundTransparency = 1}):Play()
     end
-    for _, ring in ipairs(shockRings) do
-        TweenService:Create(ring.stroke, TweenInfo.new(0.5), {Transparency = 1}):Play()
-    end
     task.wait(0.4)
     TweenService:Create(Intro, TweenInfo.new(0.7, Enum.EasingStyle.Quart), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(VignetteTop, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(VignetteBot, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
     task.wait(0.9)
     Intro:Destroy()
 end)
 
--- MAIN WINDOW
+-- ═════════════════════════════════════════════════════════════
+--  MAIN WINDOW (Visible immediately — fade via transparency)
+-- ═════════════════════════════════════════════════════════════
 local Window = Instance.new("Frame")
 Window.Name = "Window"
 Window.Size = UDim2.fromOffset(350, 540)
@@ -1031,14 +797,13 @@ Window.BackgroundColor3 = COLORS.Glass
 Window.BackgroundTransparency = 1
 Window.BorderSizePixel = 0
 Window.ClipsDescendants = true
-Window.Visible = false
 Window.Parent = GUI
 addCorner(Window, 18)
 
+-- Fade in after intro
 task.spawn(function()
-    task.wait(9.0)
-    Window.Visible = true
-    TweenService:Create(Window, TweenInfo.new(0.6, Enum.EasingStyle.Quart), {
+    task.wait(6.5)
+    TweenService:Create(Window, TweenInfo.new(0.8, Enum.EasingStyle.Quart), {
         BackgroundTransparency = 0.4
     }):Play()
 end)
@@ -1079,44 +844,6 @@ FrostGrad.Rotation = 135
 FrostGrad.Transparency = NumberSequence.new(0.2, 0.5, 0.3)
 FrostGrad.Parent = Frost
 
-local Gloss = Instance.new("Frame")
-Gloss.Size = UDim2.new(1.6, 0, 0, 90)
-Gloss.Position = UDim2.new(-0.3, 0, 0, -30)
-Gloss.BackgroundColor3 = COLORS.White
-Gloss.BackgroundTransparency = 0.85
-Gloss.BorderSizePixel = 0
-Gloss.Rotation = -8
-Gloss.ZIndex = 1
-Gloss.Parent = Window
-addCorner(Gloss, 18)
-local GlossGrad = Instance.new("UIGradient")
-GlossGrad.Color = ColorSequence.new(Color3.fromRGB(255,255,255), Color3.fromRGB(210,175,255), Color3.fromRGB(255,255,255))
-GlossGrad.Transparency = NumberSequence.new(0.7, 0.2, 0.7)
-GlossGrad.Rotation = 90
-GlossGrad.Parent = Gloss
-
-local Shimmer = Instance.new("Frame")
-Shimmer.Size = UDim2.new(0.5, 0, 1, 0)
-Shimmer.Position = UDim2.new(-0.5, 0, 0, 0)
-Shimmer.BackgroundColor3 = COLORS.White
-Shimmer.BackgroundTransparency = 0.93
-Shimmer.BorderSizePixel = 0
-Shimmer.ZIndex = 2
-Shimmer.Parent = Window
-local ShimmerGrad = Instance.new("UIGradient")
-ShimmerGrad.Color = ColorSequence.new(Color3.fromRGB(255,255,255), Color3.fromRGB(215,180,255), Color3.fromRGB(255,255,255))
-ShimmerGrad.Transparency = NumberSequence.new(1, 0, 1)
-ShimmerGrad.Rotation = 15
-ShimmerGrad.Parent = Shimmer
-task.spawn(function()
-    while Shimmer.Parent do
-        Shimmer.Position = UDim2.new(-0.5, 0, 0, 0)
-        TweenService:Create(Shimmer, TweenInfo.new(3.5, Enum.EasingStyle.Linear),
-            {Position = UDim2.new(1.5, 0, 0, 0)}):Play()
-        task.wait(4.2)
-    end
-end)
-
 local InterfaceScale = Instance.new("UIScale")
 InterfaceScale.Scale = 0.95
 InterfaceScale.Parent = Window
@@ -1127,11 +854,7 @@ local function updateScale()
     if not cam then InterfaceScale.Scale=0.95; return end
     local vp = cam.ViewportSize
     local fit = math.min((vp.X-24)/350, (vp.Y-24)/540)
-    if UserInputService.TouchEnabled then
-        InterfaceScale.Scale = math.max(0.5, math.min(0.72, fit))
-    else
-        InterfaceScale.Scale = math.min(0.98, math.max(0.78, fit))
-    end
+    InterfaceScale.Scale = math.min(0.98, math.max(0.7, fit))
 end
 local function watchVP()
     if viewportConn then viewportConn:Disconnect(); viewportConn=nil end
@@ -1150,6 +873,7 @@ local ContentAreas = {}
 local minTween = nil
 local RedeemerPage, VisualsPage
 
+-- HEADER
 local Header = Instance.new("Frame")
 Header.Size = UDim2.new(1,0,0,62)
 Header.BackgroundColor3 = COLORS.Glass2
@@ -1205,14 +929,14 @@ local SubLbl = makeLabel(Header, "S", "Standby", UDim2.fromOffset(150,14), UDim2
 SubLbl.ZIndex = 5
 
 local MinBtn = Instance.new("TextButton")
-MinBtn.Size = UDim2.fromOffset(24,24)
-MinBtn.Position = UDim2.new(1,-112,0,19)
+MinBtn.Size = UDim2.fromOffset(28,28)
+MinBtn.Position = UDim2.new(1,-116,0,17)
 MinBtn.BackgroundColor3 = COLORS.White
 MinBtn.BackgroundTransparency = 0.85
 MinBtn.BorderSizePixel = 0
 MinBtn.AutoButtonColor = false
 MinBtn.Text = "−"
-MinBtn.TextSize = 16
+MinBtn.TextSize = 18
 MinBtn.TextColor3 = COLORS.TextDim
 MinBtn.Font = Enum.Font.GothamBold
 MinBtn.Active = true
@@ -1222,20 +946,20 @@ addCorner(MinBtn, 8)
 addStroke(MinBtn, COLORS.Stroke, 1, 0.5)
 
 local PowerBtn = Instance.new("TextButton")
-PowerBtn.Size = UDim2.fromOffset(58,28)
-PowerBtn.Position = UDim2.new(1,-74,0,17)
+PowerBtn.Size = UDim2.fromOffset(62,30)
+PowerBtn.Position = UDim2.new(1,-76,0,16)
 PowerBtn.BackgroundColor3 = COLORS.White
 PowerBtn.BackgroundTransparency = 0.85
 PowerBtn.BorderSizePixel = 0
 PowerBtn.AutoButtonColor = false
 PowerBtn.Text = "OFF"
-PowerBtn.TextSize = 10
+PowerBtn.TextSize = 11
 PowerBtn.TextColor3 = COLORS.TextDim
 PowerBtn.Font = Enum.Font.GothamBold
 PowerBtn.Active = true
 PowerBtn.ZIndex = 6
 PowerBtn.Parent = Header
-addCorner(PowerBtn, 14)
+addCorner(PowerBtn, 15)
 local PowerStroke = addStroke(PowerBtn, COLORS.Stroke, 1.2, 0.4)
 
 local masterOn = _enabled
@@ -1285,9 +1009,11 @@ local function setMinimized(state)
     end
 end
 
-MinBtn.MouseButton1Click:Connect(function() setMinimized(not minimized) end)
-MinBtn.MouseEnter:Connect(function() TweenService:Create(MinBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.7}):Play() end)
-MinBtn.MouseLeave:Connect(function() TweenService:Create(MinBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.85}):Play() end)
+-- 🆕 SIMPLE CLICK HANDLER — works on both PC + mobile
+-- (MouseButton1Click fires on mobile taps too in Roblox)
+MinBtn.MouseButton1Click:Connect(function()
+    setMinimized(not minimized)
+end)
 
 local Console, ConsoleOutput, updateConsoleCanvas
 local CC = {
@@ -1333,17 +1059,11 @@ local function setRowEnabled(entry, enabled)
         entry.sw.Active = enabled
         entry.sw.TextTransparency = 1-a
     end
-    if entry.extraButtons then
-        for _,b in ipairs(entry.extraButtons) do b.Active = enabled; b.TextTransparency = 1-a end
-    end
-    if entry.extraLabels then
-        for _,l in ipairs(entry.extraLabels) do l.TextTransparency = 1-a end
-    end
 end
 
 local function makeGlassSwitch(parent, initial)
     local Track = Instance.new("TextButton")
-    Track.Size = UDim2.fromOffset(46, 26)
+    Track.Size = UDim2.fromOffset(48, 28)
     Track.BackgroundColor3 = initial and COLORS.Green or COLORS.White
     Track.BackgroundTransparency = initial and 0.15 or 0.85
     Track.BorderSizePixel = 0
@@ -1352,16 +1072,16 @@ local function makeGlassSwitch(parent, initial)
     Track.Active = true
     Track.ZIndex = 5
     Track.Parent = parent
-    addCorner(Track, 13)
+    addCorner(Track, 14)
     local TrackStroke = addStroke(Track, initial and COLORS.White or COLORS.Stroke, 1, 0.4)
     local Knob = Instance.new("Frame")
-    Knob.Size = UDim2.fromOffset(20, 20)
-    Knob.Position = initial and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
+    Knob.Size = UDim2.fromOffset(22, 22)
+    Knob.Position = initial and UDim2.new(1, -24, 0.5, -11) or UDim2.new(0, 3, 0.5, -11)
     Knob.BackgroundColor3 = COLORS.White
     Knob.BorderSizePixel = 0
     Knob.ZIndex = 6
     Knob.Parent = Track
-    addCorner(Knob, 10)
+    addCorner(Knob, 11)
     local kStroke = Instance.new("UIStroke")
     kStroke.Color = Color3.fromRGB(0,0,0); kStroke.Thickness = 1; kStroke.Transparency = 0.85
     kStroke.Parent = Knob
@@ -1375,13 +1095,13 @@ local function animateGlassSwitch(sw, on)
     }):Play()
     sw.stroke.Color = on and COLORS.White or COLORS.Stroke
     TweenService:Create(sw.knob, TweenInfo.new(0.28, Enum.EasingStyle.Quart), {
-        Position = on and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 3, 0.5, -10)
+        Position = on and UDim2.new(1, -24, 0.5, -11) or UDim2.new(0, 3, 0.5, -11)
     }):Play()
 end
 
 local function makeFeatureRow(parent, y, letterTag, label, desc, consoleName, initial, onToggle)
     local Row = Instance.new("Frame")
-    Row.Size = UDim2.new(1, -24, 0, 56)
+    Row.Size = UDim2.new(1, -24, 0, 58)
     Row.Position = UDim2.fromOffset(12, y)
     Row.BackgroundColor3 = COLORS.Card
     Row.BackgroundTransparency = 0.7
@@ -1391,18 +1111,9 @@ local function makeFeatureRow(parent, y, letterTag, label, desc, consoleName, in
     addCorner(Row, 14)
     addStroke(Row, COLORS.Stroke, 1, 0.7)
 
-    local rGloss = Instance.new("Frame")
-    rGloss.Size = UDim2.new(1,0,0,26)
-    rGloss.BackgroundColor3 = COLORS.White
-    rGloss.BackgroundTransparency = 0.94
-    rGloss.BorderSizePixel = 0
-    rGloss.ZIndex = 3
-    rGloss.Parent = Row
-    addCorner(rGloss, 14)
-
     local Tag = Instance.new("Frame")
-    Tag.Size = UDim2.fromOffset(34, 34)
-    Tag.Position = UDim2.fromOffset(10, 11)
+    Tag.Size = UDim2.fromOffset(36, 36)
+    Tag.Position = UDim2.fromOffset(11, 11)
     Tag.BackgroundColor3 = COLORS.White
     Tag.BackgroundTransparency = 0.85
     Tag.BorderSizePixel = 0
@@ -1418,13 +1129,13 @@ local function makeFeatureRow(parent, y, letterTag, label, desc, consoleName, in
     tagLbl.TextXAlignment = Enum.TextXAlignment.Center
     tagLbl.ZIndex = 6
 
-    local NameLbl = makeLabel(Row, "N", label, UDim2.new(1,-120,0,18), UDim2.fromOffset(54,11), 13, COLORS.White, Enum.Font.GothamBold)
+    local NameLbl = makeLabel(Row, "N", label, UDim2.new(1,-120,0,18), UDim2.fromOffset(56,11), 13, COLORS.White, Enum.Font.GothamBold)
     NameLbl.ZIndex = 5
-    local DescLbl = makeLabel(Row, "D", desc, UDim2.new(1,-120,0,14), UDim2.fromOffset(54,29), 10, COLORS.TextDim, Enum.Font.GothamMedium)
+    local DescLbl = makeLabel(Row, "D", desc, UDim2.new(1,-120,0,14), UDim2.fromOffset(56,30), 10, COLORS.TextDim, Enum.Font.GothamMedium)
     DescLbl.ZIndex = 5
 
     local sw = makeGlassSwitch(Row, initial)
-    sw.track.Position = UDim2.new(1, -58, 0.5, -13)
+    sw.track.Position = UDim2.new(1, -60, 0.5, -14)
 
     local state = initial
     local function setState(s)
@@ -1432,14 +1143,12 @@ local function makeFeatureRow(parent, y, letterTag, label, desc, consoleName, in
         animateGlassSwitch(sw, s)
         if onToggle then onToggle(s) end
     end
+    -- ✅ Simple click — works on PC + mobile
     sw.track.MouseButton1Click:Connect(function()
         if not masterOn then return end
         setState(not state)
         if ConsoleOutput then logSetting(consoleName, state and "Enabled" or "Disabled", state and CC.Green or CC.Red) end
     end)
-
-    Row.MouseEnter:Connect(function() TweenService:Create(Row, TweenInfo.new(0.15), {BackgroundTransparency = 0.6}):Play() end)
-    Row.MouseLeave:Connect(function() TweenService:Create(Row, TweenInfo.new(0.15), {BackgroundTransparency = 0.7}):Play() end)
 
     local entry = {set=setState, get=function() return state end, sw=sw.track, name=NameLbl, desc=DescLbl, iconLbl=tagLbl, row=Row}
     featureRegistry[consoleName] = entry
@@ -1447,14 +1156,14 @@ local function makeFeatureRow(parent, y, letterTag, label, desc, consoleName, in
 end
 
 local TabBar = Instance.new("Frame")
-TabBar.Size = UDim2.new(1, -24, 0, 34)
+TabBar.Size = UDim2.new(1, -24, 0, 38)
 TabBar.Position = UDim2.fromOffset(12, 68)
 TabBar.BackgroundColor3 = COLORS.Glass2
 TabBar.BackgroundTransparency = 0.55
 TabBar.BorderSizePixel = 0
 TabBar.ZIndex = 3
 TabBar.Parent = Window
-addCorner(TabBar, 17)
+addCorner(TabBar, 19)
 addStroke(TabBar, COLORS.Stroke, 1, 0.6)
 ContentAreas[#ContentAreas+1] = TabBar
 
@@ -1466,7 +1175,7 @@ TabSlider.BackgroundTransparency = 0.75
 TabSlider.BorderSizePixel = 0
 TabSlider.ZIndex = 4
 TabSlider.Parent = TabBar
-addCorner(TabSlider, 14)
+addCorner(TabSlider, 15)
 addStroke(TabSlider, COLORS.White, 1, 0.4)
 
 local tabSliderTweenInfo = TweenInfo.new(0.28, Enum.EasingStyle.Quart)
@@ -1497,7 +1206,7 @@ TabVisualsBtn.Parent = TabBar
 
 RedeemerPage = Instance.new("Frame")
 RedeemerPage.Size = UDim2.new(1, 0, 0, 190)
-RedeemerPage.Position = UDim2.fromOffset(0, 108)
+RedeemerPage.Position = UDim2.fromOffset(0, 112)
 RedeemerPage.BackgroundTransparency = 1
 RedeemerPage.ZIndex = 3
 RedeemerPage.Parent = Window
@@ -1505,7 +1214,7 @@ ContentAreas[#ContentAreas+1] = RedeemerPage
 
 VisualsPage = Instance.new("Frame")
 VisualsPage.Size = UDim2.new(1, 0, 0, 190)
-VisualsPage.Position = UDim2.fromOffset(0, 108)
+VisualsPage.Position = UDim2.fromOffset(0, 112)
 VisualsPage.BackgroundTransparency = 1
 VisualsPage.ZIndex = 3
 VisualsPage.Visible = false
@@ -1534,10 +1243,10 @@ TabVisualsBtn.MouseButton1Click:Connect(function() setTab("visuals") end)
 makeFeatureRow(RedeemerPage, 4, "AS", "Auto Submit", "Unlimited progressive redeem", "Auto submit", _autoAccept, function(s)
     _autoAccept = s; savedConfig.autoSubmit = s; saveConfig()
 end)
-makeFeatureRow(RedeemerPage, 64, "AI", "AI Riddles", "Offline riddle solver (150+)", "AI riddles", _riddleSolver, function(s)
+makeFeatureRow(RedeemerPage, 70, "AI", "AI Riddles", "Offline riddle solver (150+)", "AI riddles", _riddleSolver, function(s)
     _riddleSolver = s; savedConfig.riddleSolver = s; saveConfig()
 end)
-makeFeatureRow(RedeemerPage, 124, "RI", "Retype Invalid", "Restore on rejection", "Retype invalid", _retypeInvalid, function(s)
+makeFeatureRow(RedeemerPage, 136, "RI", "Retype Invalid", "Restore on rejection", "Retype invalid", _retypeInvalid, function(s)
     _retypeInvalid = s; savedConfig.retypeInvalid = s; saveConfig()
 end)
 
@@ -1546,6 +1255,7 @@ makeFeatureRow(VisualsPage, 4, "AL", "Anti Lag", "Remove all textures · boost F
     if VFX_AntiLag then VFX_AntiLag(s) end
 end)
 
+-- ANTI LAG
 local antiLagConn = nil
 local origLighting = nil
 local textureBackup = {}
@@ -1690,15 +1400,10 @@ local function setMasterEnabled(enabled, isInitial)
         if ConsoleOutput then
             ConsoleOutput.Text = ""
             logLine("Code redeemer started", CC.Green)
-            if isInitial then
-                task.wait(0.05)
-                logLine("Unlimited progressive redeem · active", CC.Dim)
-            else
-                task.spawn(function()
-                    task.wait(0.08)
-                    logLine("Unlimited progressive redeem · active", CC.Dim)
-                end)
-            end
+            task.spawn(function()
+                task.wait(0.08)
+                logLine("Unlimited progressive · active", CC.Dim)
+            end)
         end
     else
         for name, e in pairs(featureRegistry) do
@@ -1707,7 +1412,6 @@ local function setMasterEnabled(enabled, isInitial)
                 e.set(false); setRowEnabled(e, false)
             end
         end
-        -- Reset buffer on toggle OFF
         _capturedParts = {}
         if clearAceCapture then clearAceCapture() end
         if ConsoleOutput then
@@ -1718,11 +1422,8 @@ local function setMasterEnabled(enabled, isInitial)
     end
 end
 
-PowerBtn.MouseButton1Click:Connect(function() setMasterEnabled(not masterOn, false) end)
-PowerBtn.MouseEnter:Connect(function() TweenService:Create(PowerBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.05}):Play() end)
-PowerBtn.MouseLeave:Connect(function()
-    if masterOn then TweenService:Create(PowerBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.15}):Play()
-    else TweenService:Create(PowerBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.85}):Play() end
+PowerBtn.MouseButton1Click:Connect(function()
+    setMasterEnabled(not masterOn, false)
 end)
 
 local ConHead = makeLabel(Window, "CH", "ACTIVITY", UDim2.new(1,0,0,14), UDim2.fromOffset(20, 308), 10, COLORS.TextMute, Enum.Font.GothamBold)
@@ -1730,14 +1431,14 @@ ConHead.ZIndex = 4
 ContentAreas[#ContentAreas+1] = ConHead
 
 local ClearBtn = Instance.new("TextButton")
-ClearBtn.Size = UDim2.fromOffset(46, 18)
-ClearBtn.Position = UDim2.new(1, -60, 0, 306)
+ClearBtn.Size = UDim2.fromOffset(52, 20)
+ClearBtn.Position = UDim2.new(1, -66, 0, 305)
 ClearBtn.BackgroundColor3 = COLORS.White
 ClearBtn.BackgroundTransparency = 0.85
 ClearBtn.BorderSizePixel = 0
 ClearBtn.AutoButtonColor = false
 ClearBtn.Text = "CLEAR"
-ClearBtn.TextSize = 9
+ClearBtn.TextSize = 10
 ClearBtn.TextColor3 = COLORS.TextDim
 ClearBtn.Font = Enum.Font.GothamBold
 ClearBtn.ZIndex = 5
@@ -1760,22 +1461,13 @@ Console.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
 Console.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 Console.CanvasSize = UDim2.new(0,0,0,0)
 Console.AutomaticCanvasSize = Enum.AutomaticSize.None
-Console.ScrollBarThickness = 3
+Console.ScrollBarThickness = 4
 Console.ScrollBarImageColor3 = COLORS.Stroke
 Console.ZIndex = 3
 Console.Parent = Window
 addCorner(Console, 14)
 addStroke(Console, COLORS.Stroke, 1, 0.5)
 ContentAreas[#ContentAreas+1] = Console
-
-local ConGloss = Instance.new("Frame")
-ConGloss.Size = UDim2.new(1,0,0,18)
-ConGloss.BackgroundColor3 = COLORS.White
-ConGloss.BackgroundTransparency = 0.94
-ConGloss.BorderSizePixel = 0
-ConGloss.ZIndex = 4
-ConGloss.Parent = Console
-addCorner(ConGloss, 14)
 
 ConsoleOutput = Instance.new("TextLabel")
 ConsoleOutput.Size = UDim2.new(1, -24, 0, 186)
@@ -1802,58 +1494,66 @@ end
 ConsoleOutput:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateConsoleCanvas)
 task.defer(updateConsoleCanvas)
 
--- ═════════════════════════════════════════════════════════════
---  🎯 CLEAR BUTTON — FULL RESET
--- ═════════════════════════════════════════════════════════════
 ClearBtn.MouseButton1Click:Connect(function()
     ConsoleOutput.Text = ""
     Console.CanvasPosition = Vector2.new(0, 0)
     updateConsoleCanvas()
     _seen = {}
-    _capturedParts = {}     -- ✅ Buffer reset
+    _capturedParts = {}
     _solvedCount = 0
     _solving = 0
     _lastStatusMsg = nil
     if clearPendingSubmission then pcall(clearPendingSubmission) end
     logLine("Console cleared · buffer reset", CC.Gold)
     task.wait(0.05)
-    logLine("Fresh start · ready for new code", CC.Dim)
+    logLine("Fresh start · ready", CC.Dim)
     if _enabled then
         task.wait(0.1)
-        logLine("Unlimited progressive redeem · active", CC.Cyan)
+        logLine("Unlimited progressive · active", CC.Cyan)
     end
 end)
-ClearBtn.MouseEnter:Connect(function() TweenService:Create(ClearBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.7, TextColor3 = COLORS.White}):Play() end)
-ClearBtn.MouseLeave:Connect(function() TweenService:Create(ClearBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.85, TextColor3 = COLORS.TextDim}):Play() end)
 
 task.defer(function()
-    task.wait(9.2)
+    task.wait(7.5)
     setMasterEnabled(masterOn, true)
 end)
 
--- DRAG
+-- DRAG (works on both PC + mobile)
 do
-    local drag, dS, pS
+    local drag, dS, pS, dragMoved
+    local DRAG_THRESHOLD = 5
     Header.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1
         or input.UserInputType == Enum.UserInputType.Touch then
+            -- Skip if tapping buttons
             for _, b in ipairs({PowerBtn, MinBtn}) do
                 local tp = b.AbsolutePosition
                 local ts = b.AbsoluteSize
                 local mx, my = input.Position.X, input.Position.Y
-                if mx >= tp.X-6 and mx <= tp.X+ts.X+6 and my >= tp.Y-6 and my <= tp.Y+ts.Y+6 then return end
+                if mx >= tp.X-8 and mx <= tp.X+ts.X+8 and my >= tp.Y-8 and my <= tp.Y+ts.Y+8 then return end
             end
-            drag, dS, pS = true, input.Position, Window.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then drag = false end
-            end)
+            drag = true
+            dragMoved = false
+            dS = input.Position
+            pS = Window.Position
         end
     end)
     UserInputService.InputChanged:Connect(function(input)
-        if drag and (input.UserInputType == Enum.UserInputType.MouseMovement
-        or input.UserInputType == Enum.UserInputType.Touch) then
+        if not drag then return end
+        if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
             local d = input.Position - dS
+            if not dragMoved then
+                if d.Magnitude < DRAG_THRESHOLD then return end
+                dragMoved = true
+            end
             Window.Position = UDim2.new(pS.X.Scale, pS.X.Offset + d.X, pS.Y.Scale, pS.Y.Offset + d.Y)
+        end
+    end)
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+            drag = false
         end
     end)
 end
@@ -1884,12 +1584,8 @@ function flashCode(code, col)
     setStatus("Code: "..tostring(code), col or COLORS.White)
 end
 
-local function resetPasteCounter()
-    _capturedParts = {}
-end
-clearAceCapture = function()
-    _capturedParts = {}
-end
+local function resetPasteCounter() _capturedParts = {} end
+clearAceCapture = function() _capturedParts = {} end
 
 local function clearBoxWatchers()
     if _boxTextConn then pcall(function() _boxTextConn:Disconnect() end) end
@@ -1950,15 +1646,11 @@ local function restoreRejectedText(box, prevText)
     return ok
 end
 
--- ═════════════════════════════════════════════════════════════
---  🎯 FEEDBACK HANDLER — success / invalid detection
--- ═════════════════════════════════════════════════════════════
 handleRedemptionFeedback = function(text, fbObj)
     if fbObj and fbObj:IsDescendantOf(GUI) then return end
     local lower = tostring(text or ""):lower()
     if lower == "" then return end
 
-    -- SUCCESS → reset buffer
     local success = lower:find("code redeemed", 1, true)
         or lower:find("redeemed!", 1, true)
         or lower:find("successfully", 1, true)
@@ -1970,14 +1662,12 @@ handleRedemptionFeedback = function(text, fbObj)
     if success and #_capturedParts > 0 then
         local finalCode = table.concat(_capturedParts)
         setStatus("✓ Accepted: "..finalCode, COLORS.Green)
-        setStatus("Buffer cleared · ready for next", COLORS.Dim)
         _capturedParts = {}
         _lastStatusMsg = nil
         clearPendingSubmission()
         return
     end
 
-    -- INVALID → keep buffer, wait for next word
     local rejected = lower:find("invalid code", 1, true)
         or lower:find("code is invalid", 1, true)
         or lower:find("code invalid", 1, true)
@@ -1990,21 +1680,17 @@ handleRedemptionFeedback = function(text, fbObj)
         or lower:find("rejected", 1, true)
 
     if rejected and #_capturedParts > 0 then
-        setStatus("✗ Invalid · keep buffer · waiting next word", COLORS.Gold)
+        setStatus("✗ Invalid · waiting next word", COLORS.Gold)
         return
     end
 end
 
--- ═════════════════════════════════════════════════════════════
---  🎯 APPEND TO BOX — UNLIMITED PROGRESSIVE
--- ═════════════════════════════════════════════════════════════
 function appendToBox(text)
     if not text or text == "" then return end
     if _lastWatchedBox and not isVisibleChain(_lastWatchedBox) then
         resetPasteCounter(); clearBoxWatchers()
     end
 
-    -- 🆕 NO TIMEOUT — buffer keeps growing until success or clear
     local box = aceCodeBox()
     _capturedParts[#_capturedParts + 1] = text
     local combined = table.concat(_capturedParts)
@@ -2024,11 +1710,9 @@ function appendToBox(text)
         setStatus("Captured · searching box...", COLORS.Gold)
     end
 
-    -- Log attempt
     setStatus(("Attempt %d · %s"):format(cnt, combined), COLORS.Green)
     flashCode(combined, COLORS.White)
 
-    -- Progressive submit — har word pe submit
     if _autoAccept then
         rememberPendingSubmission(box, combined, true)
         local ok, msg = typeAndSubmitCode(combined)
